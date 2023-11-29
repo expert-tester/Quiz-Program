@@ -85,7 +85,7 @@ public class NavBar {
         
         //testing card layout
         JLabel label = new JLabel(); 
-        label.setText("bro do you even code?");
+        label.setText("test test 1 2 3...");
         cardPanel.add(label,"test");
         cardLayout.show(cardPanel, "test");
         
