@@ -12,6 +12,5 @@ package Main;
 public class Main {
     public static void main(String[] args){
         new NavBar().createGui();
-        System.out.println("Test git");
     }
 }
