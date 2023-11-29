@@ -10,7 +10,8 @@ package Main;
  * @author Chun On
  */
 public class Main {
-    public static void main (String[] args){
+    public static void main(String[] args){
         new NavBar().createGui();
+        System.out.println("Test git");
     }
 }
