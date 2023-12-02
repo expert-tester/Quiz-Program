@@ -2,6 +2,8 @@ package Main;
 
 
 import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JLabel; //test might delete later
 import javax.swing.JMenu;
@@ -18,7 +20,7 @@ import javax.swing.JPanel;
  *
  * @author Chun On
  */
-public class NavBar {
+public class NavBar implements ActionListener{
     
     //Define variables
     private JFrame frame;
@@ -89,6 +91,15 @@ public class NavBar {
         cardPanel.add(label,"test");
         cardLayout.show(cardPanel, "test");
         
+        //ActionListener for NavBar
+        showMainMenu.addActionListener(this);
+        showEducationLesson.addActionListener(this);
+        showEducationQuiz.addActionListener(this);
+        showProfile.addActionListener(this);
+        showAboutUs.addActionListener(this);
+        showHelp.addActionListener(this);
+        showLogOut.addActionListener(this);
+        
         //NavBar frame show
         frame.setJMenuBar(menuBar);
         frame.add(cardPanel);
@@ -97,6 +108,23 @@ public class NavBar {
         frame.setSize(800, 800);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+    
+    public void actionPerformed(ActionEvent e){
+        if (e.getSource()== showMainMenu)
+            System.out.println("Main Menu"); //change later
+        if (e.getSource()== showEducationLesson)
+            System.out.println("Education Lesson"); //change later
+        if (e.getSource()== showEducationQuiz)
+            System.out.println("Educatin Quiz"); //change later
+        if (e.getSource()== showProfile)
+            System.out.println("Profile"); //change later
+        if (e.getSource()== showAboutUs)
+            System.out.println("About Us"); //change later
+        if (e.getSource()== showHelp)
+            System.out.println("Help"); //change later
+        if (e.getSource()== showLogOut)
+            System.out.println("Log Out"); //change later
     }
     
 }
