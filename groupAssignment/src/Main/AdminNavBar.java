@@ -1,8 +1,8 @@
 package Main;
 
-
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,13 +22,12 @@ import javax.swing.border.Border;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author Chun On
  */
-public class AdminNavBar implements ActionListener{
-    
+public class AdminNavBar implements ActionListener {
+
     //Define variables
     private JFrame frame;
     private JMenuBar menuBar;
@@ -49,15 +48,68 @@ public class AdminNavBar implements ActionListener{
     private CardLayout cardLayout;
     private JPanel adminPanel;
     private JTextArea adminTextArea;
-    private JButton applyButton;
-    private JLabel labelTest; //test
-    private JLabel editingLabel;
-    
+    private JButton changesButton;
+    private JButton applyChangesButton;
+    private JTextArea editingJTextArea;
+    private JLabel editingLabel; //delete later
+    private String filePath;
+    private int language;
+
+    private void updateTextArea(String newText, JTextArea editingJTextArea) {
+        editingJTextArea.setText(newText);
+        cardLayout.show(cardPanel, "Editing Pane");
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == showMainMenu) {
+            editingLabel = testContent.createEducation();
+            String name = "Main menu";
+            cardPanel.add(editingLabel, name);
+            cardLayout.show(cardPanel, name);
+            String labelText = editingLabel.getText();
+            adminTextArea.setText(labelText);
+        }
+        if (e.getSource() == showEducationLesson) {
+            editingLabel = testContent.createProfile(); //change later
+            String name = "Education Lesson";
+            cardPanel.add(editingLabel, name);
+            cardLayout.show(cardPanel, name);
+            String labelText = editingLabel.getText();
+            adminTextArea.setText(labelText);
+        }
+        if (e.getSource() == showEducationQuiz) {
+            System.out.println("Educatin Quiz"); //change later
+        }
+        if (e.getSource() == showProfile) {
+            System.out.println("Profile"); //change later
+        }
+        if (e.getSource() == showAboutUs) {
+            filePath = "text/aboutUs.txt";
+            editingJTextArea = FileHandling.textToJTextArea(filePath, language);
+            cardPanel.add(editingJTextArea, "About Us");
+            cardLayout.show(cardPanel, "About Us");
+            String labelText = editingJTextArea.getText();
+            adminTextArea.setText(labelText);
+
+        }
+        if (e.getSource() == showHelp) {
+            filePath = "text/help.txt";
+            editingJTextArea = FileHandling.textToJTextArea(filePath, language);
+            cardPanel.add(editingJTextArea, "Help");
+            cardLayout.show(cardPanel, "Help");
+            String labelText = editingJTextArea.getText();
+            adminTextArea.setText(labelText);
+        }
+        if (e.getSource() == showLogOut) {
+            System.out.println("Log Out"); //change later
+        }
+    }
+
     public void createGui() {
         //NavBar frame
         frame = new JFrame("Quiz Program");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         //NavBar menu
         menuBar = new JMenuBar();
         mainMenu = new JMenu("Main Menu");
@@ -66,7 +118,7 @@ public class AdminNavBar implements ActionListener{
         aboutUsMenu = new JMenu("About Us");
         helpMenu = new JMenu("Help");
         logOutMenu = new JMenu("Log Out");
-        
+
         //NavBar menu item
         showMainMenu = new JMenuItem("Show Main Menu");
         showEducationLesson = new JMenuItem("Lesson");
@@ -75,7 +127,7 @@ public class AdminNavBar implements ActionListener{
         showAboutUs = new JMenuItem("Show About Us");
         showHelp = new JMenuItem("Show Help");
         showLogOut = new JMenuItem("Log Out Account");
-        
+
         //NavBar content
         menuBar.add(mainMenu);
         menuBar.add(educationMenu);
@@ -83,7 +135,7 @@ public class AdminNavBar implements ActionListener{
         menuBar.add(aboutUsMenu);
         menuBar.add(helpMenu);
         menuBar.add(logOutMenu);
-        
+
         //Menu Item content
         mainMenu.add(showMainMenu);
         educationMenu.add(showEducationLesson);
@@ -92,11 +144,12 @@ public class AdminNavBar implements ActionListener{
         aboutUsMenu.add(showAboutUs);
         helpMenu.add(showHelp);
         logOutMenu.add(showLogOut);
-        
+
         //Card layout
-        cardLayout = new CardLayout();
+        cardLayout = new CardLayout(5, 5);
         cardPanel = new JPanel(cardLayout);
-        
+        cardPanel.setPreferredSize(new Dimension(400, 300));
+
         //ActionListener for NavBar
         showMainMenu.addActionListener(this);
         showEducationLesson.addActionListener(this);
@@ -105,78 +158,54 @@ public class AdminNavBar implements ActionListener{
         showAboutUs.addActionListener(this);
         showHelp.addActionListener(this);
         showLogOut.addActionListener(this);
-        
+
         //Admin
-//        String labelText = testContent.getLabelText(labelTest);
         adminPanel = new JPanel();
         adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
         adminTextArea = new JTextArea();
-//        adminTextArea.setText(labelText);
         Border adminBorder = BorderFactory.createEmptyBorder(0, 0, 50, 0);
         adminTextArea.setBorder(adminBorder);
-        applyButton = new JButton("Apply");
-        applyButton.setBorder(adminBorder);
-        adminPanel.add(new JLabel("Admin Text:"));
-        adminPanel.add(adminTextArea);
-        adminPanel.add(applyButton);
         
-        // Action listener for the Apply button
-        applyButton.addActionListener(new ActionListener() {
+        //Buttons
+        changesButton = new JButton("Change");
+        applyChangesButton = new JButton("Apply Changes");
+
+        // Set layout for buttons to make it horizontal
+        FlowLayout buttonLayout = new FlowLayout(FlowLayout.CENTER);
+        JPanel buttonPanel = new JPanel(buttonLayout);
+        buttonPanel.add(changesButton);
+        buttonPanel.add(applyChangesButton);
+
+        adminPanel.add(new JLabel("Editing Text:"));
+        adminPanel.add(adminTextArea);
+        adminPanel.add(buttonPanel);
+
+        // Action listener for the changes button
+        changesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Call a method to update the text based on admin input
-                updateLabelText(adminTextArea.getText(),labelTest);
+                updateTextArea(adminTextArea.getText(), editingJTextArea);
             }
         });
-        
+
+        // Action listener for the apply changes button
+        applyChangesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call a method to update the text based on admin input
+                FileHandling.setFileContent(adminTextArea.getText(), filePath);
+            }
+        });
+
         //NavBar frame show
         frame.setJMenuBar(menuBar);
-        frame.add(cardPanel,BorderLayout.NORTH);
+        frame.add(cardPanel, BorderLayout.NORTH);
         frame.add(adminPanel, BorderLayout.SOUTH);
-        
+
         //NavBar frame settings
         frame.setSize(800, 800);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-    
-        private void updateLabelText(String newText, JLabel editingLabel) {
-        // Assuming you have a method like createProfile that adds the JLabel
-        JLabel updatedLabel = editingLabel;
-        updatedLabel.setText(newText);
-        cardPanel.add(updatedLabel, "Profile"); // Add the updated label to the cardPanel
-        cardLayout.show(cardPanel, "Profile");
-    }
-    
-        public void actionPerformed(ActionEvent e){
-        if (e.getSource()== showMainMenu) {
-            labelTest = testContent.createEducation();
-            String name =  "Main menu";
-            cardPanel.add(labelTest, name);
-            cardLayout.show(cardPanel, name);
-            String labelText = labelTest.getText();
-            adminTextArea.setText(labelText);
-        }
-        if (e.getSource()== showEducationLesson) {
-            labelTest = testContent.createProfile(); //change later
-            String name =  "Education Lesson";
-            cardPanel.add(labelTest, name);
-            cardLayout.show(cardPanel, name);
-            String labelText = labelTest.getText();
-            adminTextArea.setText(labelText);
-        }
-        if (e.getSource()== showEducationQuiz)
-            System.out.println("Educatin Quiz"); //change later
-        if (e.getSource()== showProfile)
-            System.out.println("Profile"); //change later
-        if (e.getSource()== showAboutUs)
-            System.out.println("About Us"); //change later
-        if (e.getSource()== showHelp)
-            System.out.println("Help"); //change later
-        if (e.getSource()== showLogOut)
-            System.out.println("Log Out"); //change later
-    }
-    
-
-    
 }
