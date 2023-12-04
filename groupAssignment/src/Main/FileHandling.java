@@ -4,17 +4,14 @@
  */
 package Main;
 
-import java.awt.BorderLayout;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 /**
@@ -29,7 +26,7 @@ public class FileHandling {
             FileReader reader = new FileReader(filePath);
             return new BufferedReader(reader);
         } catch (IOException ex) {
-            Logger.getLogger(FileHandling.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(new JFrame(),ex.getMessage(),"Alert",JOptionPane.WARNING_MESSAGE);
         }
 
         return null;
@@ -40,7 +37,7 @@ public class FileHandling {
         try (FileWriter writer = new FileWriter(filePath); BufferedWriter writeFile = new BufferedWriter(writer)) {
             writeFile.write(text);
         } catch (IOException ex) {
-            Logger.getLogger(FileHandling.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(new JFrame(),ex.getMessage(),"Alert",JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -53,7 +50,7 @@ public class FileHandling {
                 message += line + "\n";
             }
         } catch (IOException ex) {
-            Logger.getLogger(FileHandling.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(new JFrame(),ex.getMessage(),"Alert",JOptionPane.WARNING_MESSAGE);
         }
 
         return message;
