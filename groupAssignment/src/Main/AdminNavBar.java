@@ -2,30 +2,30 @@ package Main;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel; //test might delete later
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import javax.swing.text.Highlighter.HighlightPainter;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-/**
- *
- * @author Chun On
- */
 public class AdminNavBar implements ActionListener {
 
     //Define variables
@@ -44,16 +44,20 @@ public class AdminNavBar implements ActionListener {
     private JMenuItem showAboutUs;
     private JMenuItem showHelp;
     private JMenuItem showLogOut;
-    private JPanel cardPanel;
     private CardLayout cardLayout;
+    private JPanel cardPanel;
     private JPanel adminPanel;
+    private JPanel buttonPanel;
     private JTextArea adminTextArea;
     private JButton changesButton;
     private JButton applyChangesButton;
-    private JTextArea editingJTextArea;
-    private JLabel editingLabel; //delete later
+    private JButton nextButton;
+    private JButton backButton;
+    private JButton searchButton;
+    private JTextArea showJTextArea;
     private String filePath;
-    private int language;
+    private String fileFormat;
+    private int current;
 
     private void updateTextArea(String newText, JTextArea editingJTextArea) {
         editingJTextArea.setText(newText);
@@ -62,46 +66,74 @@ public class AdminNavBar implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == showMainMenu) {
-            editingLabel = testContent.createEducation();
-            String name = "Main menu";
-            cardPanel.add(editingLabel, name);
-            cardLayout.show(cardPanel, name);
-            String labelText = editingLabel.getText();
+            adminPanel.setVisible(true);
+            backButton.setEnabled(false);
+            nextButton.setEnabled(false);
+            filePath = "text/frontPage.txt";
+            showJTextArea = FileHandling.textToJTextArea(filePath);
+            cardPanel.add(showJTextArea, "Front Page");
+            cardLayout.show(cardPanel, "Front Page");
+            String labelText = showJTextArea.getText();
             adminTextArea.setText(labelText);
         }
         if (e.getSource() == showEducationLesson) {
-            editingLabel = testContent.createProfile(); //change later
-            String name = "Education Lesson";
-            cardPanel.add(editingLabel, name);
-            cardLayout.show(cardPanel, name);
-            String labelText = editingLabel.getText();
-            adminTextArea.setText(labelText);
+            adminPanel.setVisible(true);
+            backButton.setEnabled(true);
+            nextButton.setEnabled(true);
+            current = 1;
+            fileFormat = "text/lessons/lesson%d.txt";
+            editContent(fileFormat, current);
         }
         if (e.getSource() == showEducationQuiz) {
-            System.out.println("Educatin Quiz"); //change later
+            adminPanel.setVisible(true);
+            backButton.setEnabled(true);
+            nextButton.setEnabled(true);
+            current = 1;
+            fileFormat = "text/questions/question%d.txt";
+            editContent(fileFormat, current);
         }
         if (e.getSource() == showProfile) {
-            System.out.println("Profile"); //change later
+            adminPanel.setVisible(false);
+            cardPanel.setPreferredSize(null);
+            String filePath = "database/database_admin.txt";
+            String name = Main.showUsername();
+            String email = FileHandling.splitData(1, name, filePath);
+            String address = FileHandling.splitData(2, name, filePath);
+            String contactNumber = FileHandling.splitData(3, name, filePath);
+            String password = FileHandling.splitData(4, name, filePath);
+            Profile userProfile = new Profile(name, email, address, contactNumber, password);
+            cardPanel.add(userProfile.displayProfile(frame), "Profile");
+            cardLayout.show(cardPanel, "Profile");
+            adminTextArea.setText(null);
         }
         if (e.getSource() == showAboutUs) {
+            adminPanel.setVisible(true);
+            backButton.setEnabled(false);
+            nextButton.setEnabled(false);
             filePath = "text/aboutUs.txt";
-            editingJTextArea = FileHandling.textToJTextArea(filePath, language);
-            cardPanel.add(editingJTextArea, "About Us");
+            showJTextArea = FileHandling.textToJTextArea(filePath);
+            cardPanel.add(showJTextArea, "About Us");
             cardLayout.show(cardPanel, "About Us");
-            String labelText = editingJTextArea.getText();
+            String labelText = showJTextArea.getText();
             adminTextArea.setText(labelText);
 
         }
         if (e.getSource() == showHelp) {
+            adminPanel.setVisible(true);
+            backButton.setEnabled(false);
+            nextButton.setEnabled(false);
             filePath = "text/help.txt";
-            editingJTextArea = FileHandling.textToJTextArea(filePath, language);
-            cardPanel.add(editingJTextArea, "Help");
+            showJTextArea = FileHandling.textToJTextArea(filePath);
+            cardPanel.add(showJTextArea, "Help");
             cardLayout.show(cardPanel, "Help");
-            String labelText = editingJTextArea.getText();
+            String labelText = showJTextArea.getText();
             adminTextArea.setText(labelText);
         }
         if (e.getSource() == showLogOut) {
-            System.out.println("Log Out"); //change later
+            int result = JOptionPane.showConfirmDialog(frame, "Are you sure you want to log out?", "Confirm Log Out", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
         }
     }
 
@@ -148,7 +180,7 @@ public class AdminNavBar implements ActionListener {
         //Card layout
         cardLayout = new CardLayout(5, 5);
         cardPanel = new JPanel(cardLayout);
-        cardPanel.setPreferredSize(new Dimension(400, 300));
+        cardPanel.setPreferredSize(new Dimension(400, 250));
 
         //ActionListener for NavBar
         showMainMenu.addActionListener(this);
@@ -163,40 +195,38 @@ public class AdminNavBar implements ActionListener {
         adminPanel = new JPanel();
         adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
         adminTextArea = new JTextArea();
-        Border adminBorder = BorderFactory.createEmptyBorder(0, 0, 50, 0);
+        Border adminBorder = BorderFactory.createEmptyBorder(0, 10, 50, 20);
         adminTextArea.setBorder(adminBorder);
-        
+
         //Buttons
         changesButton = new JButton("Change");
         applyChangesButton = new JButton("Apply Changes");
+        nextButton = new JButton("Next");
+        backButton = new JButton("Back");
+        searchButton = new JButton("Search");
+
+        //Admin Buttons Action listener
+        AdminButtons adminButtonsListener = new AdminButtons();
+        changesButton.addActionListener(adminButtonsListener);
+        applyChangesButton.addActionListener(adminButtonsListener);
+        nextButton.addActionListener(adminButtonsListener);
+        backButton.addActionListener(adminButtonsListener);
+        searchButton.addActionListener(adminButtonsListener);
 
         // Set layout for buttons to make it horizontal
         FlowLayout buttonLayout = new FlowLayout(FlowLayout.CENTER);
-        JPanel buttonPanel = new JPanel(buttonLayout);
+        buttonPanel = new JPanel(buttonLayout);
         buttonPanel.add(changesButton);
         buttonPanel.add(applyChangesButton);
+        buttonPanel.add(backButton);
+        buttonPanel.add(nextButton);
+        buttonPanel.add(searchButton);
+        backButton.setEnabled(false);
+        nextButton.setEnabled(false);
 
         adminPanel.add(new JLabel("Editing Text:"));
         adminPanel.add(adminTextArea);
         adminPanel.add(buttonPanel);
-
-        // Action listener for the changes button
-        changesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Call a method to update the text based on admin input
-                updateTextArea(adminTextArea.getText(), editingJTextArea);
-            }
-        });
-
-        // Action listener for the apply changes button
-        applyChangesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Call a method to update the text based on admin input
-                FileHandling.setFileContent(adminTextArea.getText(), filePath);
-            }
-        });
 
         //NavBar frame show
         frame.setJMenuBar(menuBar);
@@ -207,5 +237,60 @@ public class AdminNavBar implements ActionListener {
         frame.setSize(800, 800);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    private void editContent(String fileFormat, int current) {
+        filePath = String.format(fileFormat, current);
+        showJTextArea = FileHandling.textToJTextArea(filePath);
+        cardPanel.add(showJTextArea, "Education");
+        cardLayout.show(cardPanel, "Education");
+        String textArea = showJTextArea.getText();
+        adminTextArea.setText(textArea);
+        adminTextArea.setLineWrap(true);
+        adminTextArea.setWrapStyleWord(true);
+    }
+
+    public class AdminButtons implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if (e.getSource() == changesButton) {
+                updateTextArea(adminTextArea.getText(), showJTextArea);
+            } else if (e.getSource() == applyChangesButton) {
+                int result = JOptionPane.showConfirmDialog(frame, "Apply changes?", "Apply Changes", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    FileHandling.setFileContent(adminTextArea.getText(), filePath, false);
+                }
+            } else if (e.getSource() == nextButton) {
+                if (current < EducationLesson.maxLesson()) {
+                    current++;
+                    editContent(fileFormat, current);
+                } else {
+                    JOptionPane.showMessageDialog(new JFrame(), "File out or range!", "Alert", JOptionPane.WARNING_MESSAGE);
+                }
+            } else if (e.getSource() == backButton) {
+                if (current > 1) {
+                    current--;
+                    editContent(fileFormat, current);
+                } else {
+                    JOptionPane.showMessageDialog(new JFrame(), "File out or range!", "Alert", JOptionPane.WARNING_MESSAGE);
+                }
+            } else if (e.getSource() == searchButton) {
+                String searchText = JOptionPane.showInputDialog(new JFrame(), "Search Text.").toLowerCase();
+                String textArea = adminTextArea.getText().toLowerCase();
+                if (textArea.contains(searchText)) {
+                    int start = textArea.indexOf(searchText);
+                    int end = start + searchText.length();
+
+                    adminTextArea.setSelectionStart(start);
+                    adminTextArea.setSelectionEnd(end);
+                    adminTextArea.requestFocusInWindow();
+                } else {
+                    JOptionPane.showMessageDialog(new JFrame(), "Text not found.");
+                }
+                System.out.println(searchText);
+            }
+        }
     }
 }

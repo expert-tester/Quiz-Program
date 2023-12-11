@@ -1,27 +1,28 @@
 package Main;
 
+import static Main.FrontPage.buildFrontPage;
+import static Main.FrontPage.showFrontPage;
 import static Main.AboutUs.buildAboutUs;
 import static Main.AboutUs.showAboutUs;
+import static Main.EducationLesson.buildLesson;
 import static Main.Help.buildHelp;
 import static Main.Help.showHelp;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
-import javax.swing.JLabel; //test might delete later
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import static Main.EducationQuiz.buildQuiz;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-/**
- *
- * @author Chun On
- */
 public class NavBar implements ActionListener {
 
     //Define variables
@@ -40,9 +41,13 @@ public class NavBar implements ActionListener {
     private JMenuItem showAboutUs;
     private JMenuItem showHelp;
     private JMenuItem showLogOut;
+    private JButton nextButton;
+    private JButton backButton;
     private JPanel cardPanel;
+    private JPanel buttonPanel;
     private CardLayout cardLayout;
-    public int language = 1;
+    private int current;
+    public int language = 1; //change?
 
     public void createGui() {
         //NavBar frame
@@ -88,6 +93,26 @@ public class NavBar implements ActionListener {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
+        //Default card
+        if (FileHandling.checkFileExist("text/frontPage.txt")) {
+            cardPanel.add(showFrontPage(frame, language), "frontPage");
+            cardLayout.show(cardPanel, "frontPage");
+        } else {
+            buildFrontPage(language);
+            cardLayout.show(showFrontPage(frame, language), "frontPage");
+        }
+
+        //Buttons for lessons
+        nextButton = new JButton("Next");
+        backButton = new JButton("Back");
+        nextButton.addActionListener(this);
+        backButton.addActionListener(this);
+        nextButton.setPreferredSize(new Dimension(50, 50));
+        backButton.setPreferredSize(new Dimension(50, 50));
+        buttonPanel = new JPanel(new GridLayout(0, 1));
+        buttonPanel.add(nextButton, BorderLayout.SOUTH);
+        buttonPanel.add(backButton, BorderLayout.SOUTH);
+
         //ActionListener for NavBar
         showMainMenu.addActionListener(this);
         showEducationLesson.addActionListener(this);
@@ -100,6 +125,8 @@ public class NavBar implements ActionListener {
         //NavBar frame show
         frame.setJMenuBar(menuBar);
         frame.add(cardPanel);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+        buttonPanel.setVisible(false);
 
         //NavBar frame settings
         frame.setSize(800, 800);
@@ -107,38 +134,97 @@ public class NavBar implements ActionListener {
         frame.setVisible(true);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == showMainMenu) {
-            System.out.println("Main Menu"); //change later
+            buttonPanel.setVisible(false);
+            cardLayout.show(cardPanel, "frontPage");
         }
         if (e.getSource() == showEducationLesson) {
-            System.out.println("Education Lesson"); //change later
+            buttonPanel.setVisible(true);
+            if (FileHandling.checkDirectoryExist("text/lessons")) {
+                current = 1;
+                JTextArea lesson = EducationLesson.showLesson(current);
+                cardPanel.add(lesson, "EducationLesson");
+                cardLayout.show(cardPanel, "EducationLesson");
+            } else {
+                buildLesson();
+                JTextArea lesson = EducationLesson.showLesson(current);
+                cardPanel.add(lesson, "EducationLesson");
+                cardLayout.show(cardPanel, "EducationLesson");
+                frame.add(buttonPanel, BorderLayout.SOUTH);
+                frame.revalidate();
+                frame.repaint();
+            }
         }
         if (e.getSource() == showEducationQuiz) {
-            System.out.println("Educatin Quiz"); //change later
+            buttonPanel.setVisible(false);
+            if (FileHandling.checkDirectoryExist("text/questions")) {
+                EducationQuiz educationQuiz = new EducationQuiz();
+                cardPanel.add(educationQuiz, "EducationQuiz");
+                cardLayout.show(cardPanel, "EducationQuiz");
+            } else {
+                buildQuiz();
+                EducationQuiz educationQuiz = new EducationQuiz();
+                cardPanel.add(educationQuiz, "EducationQuiz");
+                cardLayout.show(cardPanel, "EducationQuiz");
+            }
         }
         if (e.getSource() == showProfile) {
-            System.out.println("Profile"); //change later
+            buttonPanel.setVisible(false);
+            String filePath = "database/database.txt";
+            String name = Main.showUsername();
+            String email = FileHandling.splitData(1, name, filePath);
+            String address = FileHandling.splitData(2, name, filePath);
+            String contactNumber = FileHandling.splitData(3, name, filePath);
+            String password = FileHandling.splitData(4, name, filePath);
+            Profile userProfile = new Profile(name, email, address, contactNumber, password);
+
+            cardPanel.add(userProfile.displayProfile(frame), "Profile");
+            cardLayout.show(cardPanel, "Profile");
         }
         if (e.getSource() == showAboutUs) {
             if (FileHandling.checkFileExist("text/aboutUs.txt")) {
-                showAboutUs(language);
+                showAboutUs();
             } else {
                 buildAboutUs(language);
-                showAboutUs(language);
+                showAboutUs();
             }
         }
 
         if (e.getSource() == showHelp) {
             if (FileHandling.checkFileExist("text/help.txt")) {
-                showHelp(language);
+                showHelp();
             } else {
                 buildHelp(language);
-                showHelp(language);
+                showHelp();
             }
         }
         if (e.getSource() == showLogOut) {
-            System.out.println("Log Out"); //change later
+            int result = JOptionPane.showConfirmDialog(frame, "Are you sure you want to log out?", "Confirm Log Out", JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        }
+
+        if (e.getSource() == nextButton) {
+            if (current < EducationLesson.maxLesson()) {
+                current++;
+                JTextArea lesson = EducationLesson.showLesson(current);
+                cardPanel.add(lesson, "EducationLesson");
+                cardLayout.show(cardPanel, "EducationLesson");
+            } else {
+                JOptionPane.showMessageDialog(new JFrame(), "File out or range!", "Alert", JOptionPane.WARNING_MESSAGE);
+            }
+        } else if (e.getSource() == backButton) {
+            if (current > 1) {
+                current--;
+                JTextArea lesson = EducationLesson.showLesson(current);
+                cardPanel.add(lesson, "EducationLesson");
+                cardLayout.show(cardPanel, "EducationLesson");
+            } else {
+                JOptionPane.showMessageDialog(new JFrame(), "File out or range!", "Alert", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
