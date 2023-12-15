@@ -2,13 +2,10 @@ package Main;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,10 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
-import javax.swing.text.Highlighter.HighlightPainter;
 
 public class AdminNavBar implements ActionListener {
 
@@ -78,7 +71,7 @@ public class AdminNavBar implements ActionListener {
         }
         if (e.getSource() == showEducationLesson) {
             adminPanel.setVisible(true);
-            backButton.setEnabled(true);
+            backButton.setEnabled(false);
             nextButton.setEnabled(true);
             current = 1;
             fileFormat = "text/lessons/lesson%d.txt";
@@ -195,7 +188,7 @@ public class AdminNavBar implements ActionListener {
         adminPanel = new JPanel();
         adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
         adminTextArea = new JTextArea();
-        Border adminBorder = BorderFactory.createEmptyBorder(0, 10, 50, 20);
+        Border adminBorder = BorderFactory.createEmptyBorder(10, 10, 50, 20);
         adminTextArea.setBorder(adminBorder);
 
         //Buttons
@@ -263,14 +256,25 @@ public class AdminNavBar implements ActionListener {
                     FileHandling.setFileContent(adminTextArea.getText(), filePath, false);
                 }
             } else if (e.getSource() == nextButton) {
-                if (current < EducationLesson.maxLesson()) {
+                if (current == EducationLesson.maxLesson() - 1) {
+                    nextButton.setEnabled(false);
+                    backButton.setEnabled(true);
+                    current++;
+                    editContent(fileFormat, current);
+                } else if (current < EducationLesson.maxLesson()) {
+                    backButton.setEnabled(true);
                     current++;
                     editContent(fileFormat, current);
                 } else {
                     JOptionPane.showMessageDialog(new JFrame(), "File out or range!", "Alert", JOptionPane.WARNING_MESSAGE);
                 }
             } else if (e.getSource() == backButton) {
-                if (current > 1) {
+                if (current > 2) {
+                    nextButton.setEnabled(true);
+                    current--;
+                    editContent(fileFormat, current);
+                } else if (current > 1) {
+                    backButton.setEnabled(false);
                     current--;
                     editContent(fileFormat, current);
                 } else {

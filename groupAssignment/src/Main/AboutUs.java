@@ -28,7 +28,12 @@ public class AboutUs {
         int option = showInformationDialog(message, title);
 
         if (option == 0) {
-            Help.showHelp();
+            if (FileHandling.checkFileExist("text/help.txt")) {
+                Help.showHelp();
+            } else {
+                Help.buildHelp(1);
+                Help.showHelp();
+            }
         }
     }
 

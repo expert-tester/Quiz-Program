@@ -129,11 +129,11 @@ public class NavBar implements ActionListener {
         buttonPanel.setVisible(false);
 
         //NavBar frame settings
-        frame.setSize(800, 800);
+        frame.setSize(1000, 800);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == showMainMenu) {
@@ -142,6 +142,7 @@ public class NavBar implements ActionListener {
         }
         if (e.getSource() == showEducationLesson) {
             buttonPanel.setVisible(true);
+            backButton.setEnabled(false);
             if (FileHandling.checkDirectoryExist("text/lessons")) {
                 current = 1;
                 JTextArea lesson = EducationLesson.showLesson(current);
@@ -149,12 +150,11 @@ public class NavBar implements ActionListener {
                 cardLayout.show(cardPanel, "EducationLesson");
             } else {
                 buildLesson();
+                current = 1;
                 JTextArea lesson = EducationLesson.showLesson(current);
                 cardPanel.add(lesson, "EducationLesson");
                 cardLayout.show(cardPanel, "EducationLesson");
                 frame.add(buttonPanel, BorderLayout.SOUTH);
-                frame.revalidate();
-                frame.repaint();
             }
         }
         if (e.getSource() == showEducationQuiz) {
@@ -179,7 +179,7 @@ public class NavBar implements ActionListener {
             String contactNumber = FileHandling.splitData(3, name, filePath);
             String password = FileHandling.splitData(4, name, filePath);
             Profile userProfile = new Profile(name, email, address, contactNumber, password);
-
+            
             cardPanel.add(userProfile.displayProfile(frame), "Profile");
             cardLayout.show(cardPanel, "Profile");
         }
@@ -191,7 +191,7 @@ public class NavBar implements ActionListener {
                 showAboutUs();
             }
         }
-
+        
         if (e.getSource() == showHelp) {
             if (FileHandling.checkFileExist("text/help.txt")) {
                 showHelp();
@@ -206,9 +206,17 @@ public class NavBar implements ActionListener {
                 System.exit(0);
             }
         }
-
+        
         if (e.getSource() == nextButton) {
-            if (current < EducationLesson.maxLesson()) {
+            if (current == EducationLesson.maxLesson()-1) {
+                nextButton.setEnabled(false);
+                backButton.setEnabled(true);
+                current++;
+                JTextArea lesson = EducationLesson.showLesson(current);
+                cardPanel.add(lesson, "EducationLesson");
+                cardLayout.show(cardPanel, "EducationLesson");
+            } else if (current < EducationLesson.maxLesson()) {
+                backButton.setEnabled(true);
                 current++;
                 JTextArea lesson = EducationLesson.showLesson(current);
                 cardPanel.add(lesson, "EducationLesson");
@@ -217,7 +225,14 @@ public class NavBar implements ActionListener {
                 JOptionPane.showMessageDialog(new JFrame(), "File out or range!", "Alert", JOptionPane.WARNING_MESSAGE);
             }
         } else if (e.getSource() == backButton) {
-            if (current > 1) {
+            if (current > 2) {
+                nextButton.setEnabled(true);
+                current--;
+                JTextArea lesson = EducationLesson.showLesson(current);
+                cardPanel.add(lesson, "EducationLesson");
+                cardLayout.show(cardPanel, "EducationLesson");
+            } else if (current > 1) {
+                backButton.setEnabled(false);
                 current--;
                 JTextArea lesson = EducationLesson.showLesson(current);
                 cardPanel.add(lesson, "EducationLesson");
@@ -227,5 +242,5 @@ public class NavBar implements ActionListener {
             }
         }
     }
-
+    
 }

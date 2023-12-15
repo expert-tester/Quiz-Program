@@ -106,9 +106,9 @@ public class signup extends JFrame implements ActionListener {
 
             // Display a success message
             JOptionPane.showMessageDialog(this, "Sign up successful! Please log in again.");
-            
+
             Main.startMain();
-            
+
             // Close the sign-up window
             dispose();
         }
@@ -124,9 +124,12 @@ public class signup extends JFrame implements ActionListener {
 
     private void saveToTextFile(String name, String email, String address, String contactNumber, String password, String userType) {
         try {
-
-            String fileName = (userType.equals("Admin")) ? "database/database_admin.txt" : "database/database.txt";
+            String basePath = new File("").getAbsolutePath();
+            String adminDatabase = basePath + File.separator + "database/database_admin.txt";
+            String userDatabase = basePath + File.separator + "database/database.txt";
+            String fileName = (userType.equals("Admin")) ? adminDatabase : userDatabase;
             File f = new File(fileName);
+            f.getParentFile().mkdirs();
 
             try (PrintWriter pw = new PrintWriter(new FileOutputStream(f, true))) {
                 pw.println(name + ',' + email + ',' + address + ',' + contactNumber + ',' + password + ',' + userType);

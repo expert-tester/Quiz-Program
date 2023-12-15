@@ -13,11 +13,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 public class FileHandling {
-
+    
     public static BufferedReader getFileContent(String filePath) {
-
+        String basePath = new File("").getAbsolutePath();
+        String absoluteFilePath = basePath + File.separator + filePath;
         try {
-            FileReader reader = new FileReader(filePath);
+            FileReader reader = new FileReader(absoluteFilePath);
             return new BufferedReader(reader);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(new JFrame(), ex.getMessage(), "Alert", JOptionPane.WARNING_MESSAGE);
@@ -27,7 +28,9 @@ public class FileHandling {
     }
 
     public static void setFileContent(String text, String filePath, Boolean appendable) {
-        File file = new File(filePath);
+        String basePath = new File("").getAbsolutePath();
+        String absoluteFilePath = basePath + File.separator + filePath;
+        File file = new File(absoluteFilePath);
         file.getParentFile().mkdirs();
         try {
             file.createNewFile();
@@ -74,18 +77,23 @@ public class FileHandling {
     }
 
     public static ArrayList<Integer> textToArrayInt(String filePath) {
-        BufferedReader reader = FileHandling.getFileContent(filePath);
-        ArrayList<Integer> arrayInt = new ArrayList<>();
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                int score = (line != null && !line.isEmpty()) ? Integer.parseInt(line) : 0;
-                arrayInt.add(score);
+        String basePath = new File("").getAbsolutePath();
+        String absoluteFilePath = basePath + File.separator + filePath;
+        try (BufferedReader reader = new BufferedReader(new FileReader(absoluteFilePath))) {
+            ArrayList<Integer> arrayInt = new ArrayList<>();
+            String line;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    int score = (line != null && !line.isEmpty()) ? Integer.parseInt(line) : 0;
+                    arrayInt.add(score);
+                }
+                return arrayInt;
+            } catch (IOException ex) {
+                return arrayInt;
             }
         } catch (IOException ex) {
-            return arrayInt;
+            return new ArrayList<>();
         }
-        return arrayInt;
     }
 
     public static String getLineByIndex(int index, ArrayList<String> arrayLines) {
@@ -97,12 +105,16 @@ public class FileHandling {
     }
 
     public static boolean checkFileExist(String filePath) {
-        File f = new File(filePath);
+        String basePath = new File("").getAbsolutePath();
+        String absoluteFilePath = basePath + File.separator + filePath;
+        File f = new File(absoluteFilePath);
         return f.exists() && !f.isDirectory();
     }
-    
+
     public static boolean checkDirectoryExist(String filePath) {
-        File f = new File(filePath);
+        String basePath = new File("").getAbsolutePath();
+        String absoluteFilePath = basePath + File.separator + filePath;
+        File f = new File(absoluteFilePath);
         return f.exists() && f.isDirectory();
     }
 
@@ -137,8 +149,9 @@ public class FileHandling {
     public static String replaceLine(String filePath, String searchString, String replacementString) {
         StringBuilder updatedLine = new StringBuilder();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        BufferedReader reader = FileHandling.getFileContent(filePath);
             String line;
+        try {
             while ((line = reader.readLine()) != null) {
                 if (line.contains(searchString)) {
                     line = replacementString;

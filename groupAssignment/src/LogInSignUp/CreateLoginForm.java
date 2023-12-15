@@ -78,9 +78,22 @@ public class CreateLoginForm extends JFrame implements ActionListener {
     }
 
     private boolean checkCredentials(String userValue, String passValue) {
+        String basePath = new File("").getAbsolutePath();
+        File f = new File(basePath + File.separator + "database/database.txt");
+        File af = new File(basePath + File.separator + "database/database_admin.txt");
 
-        File f = new File("database/database.txt");
-        File af = new File("database/database_admin.txt");
+        f.getParentFile().mkdirs();
+        af.getParentFile().mkdirs();
+        try {
+            boolean file1Created = f.createNewFile();
+            boolean file2Created = af.createNewFile();
+
+            if (file1Created && file2Created) {
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try (BufferedReader br = new BufferedReader(new FileReader(f)); BufferedReader abr = new BufferedReader(new FileReader(af))) {
 
@@ -97,7 +110,7 @@ public class CreateLoginForm extends JFrame implements ActionListener {
                         userType = fields[5];
                         JOptionPane.showMessageDialog(null, "Log in Success!!!");
                         new NavBar().createGui();
-                        dispose(); // Assuming dispose() is a method in CreateLoginForm
+                        dispose();
                         return true; // Credentials are valid
                     }
                 }
@@ -114,13 +127,13 @@ public class CreateLoginForm extends JFrame implements ActionListener {
                         userType = fields[5];
                         JOptionPane.showMessageDialog(null, "Admin login Success!!!");
                         new AdminNavBar().createGui();
-                        dispose(); // Assuming dispose() is a method in CreateLoginForm
+                        dispose();
                         return true; // Credentials are valid    
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception appropriately
+            e.printStackTrace();
         }
         JOptionPane.showMessageDialog(null, "Invalid username or password");
         return false; // Credentials are not valid

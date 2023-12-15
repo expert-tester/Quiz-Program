@@ -39,7 +39,7 @@ public class Profile {
         this.contactNumber = contactNumber;
         this.password = password;
         this.scoreHistory = ("Admin".equals(userType)) ? new ArrayList<>() : FileHandling.textToArrayInt("text/score/" + username + "/score.txt");
-        this.highestScore = ("Admin".equals(userType)) ? 0 : Collections.max(scoreHistory);
+        this.highestScore = ("Admin".equals(userType)) ? 0 : (!scoreHistory.isEmpty()) ? Collections.max(scoreHistory) : 0;
     }
 
     public JPanel displayProfile(JFrame frame) {

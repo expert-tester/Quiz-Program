@@ -10,7 +10,7 @@ public class Main {
     private static String username;
     private static String userType;
 
-    public static void main(String[] args) { //add language choice, change language, file checking lesson - quiz, sign return
+    public static void main(String[] args) {
         startMain();
     }
 
