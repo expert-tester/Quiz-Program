@@ -15,7 +15,7 @@ import javax.swing.SwingConstants;
 
 /**
  *
- * @author Chun On
+ * @author Phoon Chun On
  */
 public class FrontPage {
 

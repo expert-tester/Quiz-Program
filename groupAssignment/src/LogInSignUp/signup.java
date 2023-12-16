@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package LogInSignUp;
 
 import Main.Main;
@@ -7,6 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 
+/**
+ *
+ * @author Teo Di Shi
+ */
 public class signup extends JFrame implements ActionListener {
 
     JLabel nameLabel, emailLabel, addressLabel, contactNumberLabel, passwordLabel, userTypeLabel;
@@ -79,7 +87,7 @@ public class signup extends JFrame implements ActionListener {
             // Collect user information
             String name = nameField.getText();
             String email = emailField.getText();
-            String address = addressField.getText();
+            String address = addressField.getText().replace(",", "");
             String contactNumber = contactNumberField.getText();
             char[] passwordChars = passwordField.getPassword();
             String password = new String(passwordChars);

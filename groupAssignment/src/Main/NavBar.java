@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Main;
 
 import static Main.FrontPage.buildFrontPage;
@@ -23,6 +27,10 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
+/**
+ *
+ * @author Phoon Chun On
+ */
 public class NavBar implements ActionListener {
 
     //Define variables
@@ -51,7 +59,7 @@ public class NavBar implements ActionListener {
 
     public void createGui() {
         //NavBar frame
-        frame = new JFrame("Quiz Program");
+        frame = new JFrame("GreenQuizzXIII");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //NavBar menu

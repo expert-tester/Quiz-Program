@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Jacey Ng
+ * @author Ng Jacey
  */
 public class Profile {
 

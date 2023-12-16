@@ -23,7 +23,7 @@ import javax.swing.Timer;
 
 /**
  *
- * @author Nicole
+ * @author Ou Kai Ying
  */
 public class EducationQuiz extends JPanel implements ActionListener {
 

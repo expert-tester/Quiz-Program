@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Main;
 
 import java.awt.BorderLayout;
@@ -19,6 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
+/**
+ *
+ * @author Phoon Chun On
+ */
 public class AdminNavBar implements ActionListener {
 
     //Define variables
@@ -132,7 +140,7 @@ public class AdminNavBar implements ActionListener {
 
     public void createGui() {
         //NavBar frame
-        frame = new JFrame("Quiz Program");
+        frame = new JFrame("Admin GreenQuizzXIII");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //NavBar menu

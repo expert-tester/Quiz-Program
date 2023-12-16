@@ -11,7 +11,7 @@ import javax.swing.JTextArea;
 
 /**
  *
- * @author Hui En
+ * @author Oo Hui En
  */
 public class EducationLesson {
 

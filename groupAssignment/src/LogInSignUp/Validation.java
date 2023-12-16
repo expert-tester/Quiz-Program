@@ -1,13 +1,12 @@
-package LogInSignUp;
-
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+package LogInSignUp;
 
 /**
  *
- * @author Chun On
+ * @author Phoon Chun On
  */
 public class Validation {
     // validate first name
